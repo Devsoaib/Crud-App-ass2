@@ -1,4 +1,6 @@
 const OTPSModel = require("../../models/Users/OTPSModel");
+const bcrypt = require('bcrypt')
+
 
 
 const UserResetPassService = async (Request, DataModel) => {
@@ -13,7 +15,9 @@ const UserResetPassService = async (Request, DataModel) => {
 
         if (OTPUsedCount.length>0) {
             // Database Second Process
-            let PassUpdate = await DataModel.updateOne({email: email},{password: NewPass})
+            //hashed password
+            const hashedPass = await bcrypt.hash(NewPass, 10);
+            let PassUpdate = await DataModel.updateOne({email: email},{password: hashedPass})
             return {status: "success", data: PassUpdate}
         }
 

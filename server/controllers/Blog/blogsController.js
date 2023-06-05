@@ -21,7 +21,7 @@ exports.UpdateBlog = async (req,res ) => {
 exports.BlogList=async (req, res) => {
     let SearchRgx = {"$regex": req.params.searchKeyword, "$options": "i"}
     let JoinStage={$lookup: {from: "users", localField: "AuthorEmail", foreignField: "email", as: "Author"}}
-    let projection = {$project: { _id: 1,Title: 1,Description: 1,AuthorEmail: 1 ,CreatedDate: 1 ,Author: { $arrayElemAt: ['$Author.firstName', 0] }}}
+    let projection = {$project: { _id: 1,Title: 1,Description: 1,AuthorEmail: 1 ,CreatedDate: 1 ,Author: { $arrayElemAt: ['$Author.name', 0] }}}
     let SearchArray=[{Note: SearchRgx},{'Author': SearchRgx},{"Title": SearchRgx}, {"Description": SearchRgx}]
     let Result=await ListOneJoinService(req,DataModel,SearchArray,JoinStage, projection);
     res.status(200).json(Result)
@@ -35,7 +35,7 @@ exports.DeleteBlog = async (req, res) => {
 
 exports.BlogDetailsByID = async (req, res) => {
     let JoinStage={$lookup: {from: "users", localField: "AuthorEmail", foreignField: "email", as: "Author"}}
-    let projection = {$project: { _id: 1,Title: 1,Description: 1,AuthorEmail: 1 ,CreatedDate: 1 ,Author: { $arrayElemAt: ['$Author.firstName', 0] }}}
+    let projection = {$project: { _id: 1,Title: 1,Description: 1,AuthorEmail: 1 ,CreatedDate: 1 ,Author: { $arrayElemAt: ['$Author.name', 0] }}}
     let Result = await DetailsByIDService(req, DataModel, JoinStage, projection)
     res.status(200).json(Result)
 }
